@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +16,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        //kullanıcı girişi ve kullanıcı hatırlama
+        rememberUser()
+        
+        // Parse Configuration
+        let config = ParseClientConfiguration { (ParseMutableClientConfiguration) in
+            
+            //appId
+            ParseMutableClientConfiguration.applicationId = "48f64c3573b1f3ff8ed6a8df7ecb3cdc06d334dc"
+            //masterKey
+            ParseMutableClientConfiguration.clientKey = "cec2d43ec635e788dfea986bd44f6e6abb516031"
+            //serverURL
+            ParseMutableClientConfiguration.server = "http://18.216.202.123:80/parse"
+            
+            
+        }
+        Parse.initialize(with: config)
+        
+        let defaultACL = PFACL()
+        defaultACL.getPublicReadAccess = true
+        defaultACL.getPublicWriteAccess = true
+        PFACL.setDefault(defaultACL, withAccessForCurrentUser: true)
+        
         return true
     }
 
@@ -39,6 +61,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    //girişleri kaydetmek kullanıcı girişi ve kullanıcı hatırlama
+    func rememberUser() {
+        let user : String? = UserDefaults.standard.string(forKey: "username")
+        if user != nil {
+            let board : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let tabBar = board.instantiateViewController(withIdentifier: "tabBar") as! UITabBarController
+            window?.rootViewController = tabBar
+        }
     }
 
 
